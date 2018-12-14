@@ -47,6 +47,7 @@ const universal = (req, res) => {
 
 // Server static files from /browser
 app.get('*.js', express.static(join(DIST_FOLDER, 'foo')));
+app.get('*.js.map', express.static(join(DIST_FOLDER, 'foo')));
 
 // All regular routes use the Universal engine
 app.get('/', universal);
