@@ -5,6 +5,9 @@ import {SubComponentComponent} from 'src/app/sub-component/sub-component.compone
 const routes: Routes = [{
   path: 'sub',
   component: SubComponentComponent,
+}, {
+  path: 'lazy',
+  loadChildren: 'src/app/lazy/lazy.module#LazyModule',
 }];
 
 @NgModule({

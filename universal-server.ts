@@ -53,6 +53,7 @@ app.get('*.js.map', express.static(join(DIST_FOLDER, 'foo')));
 // All regular routes use the Universal engine
 app.get('/', universal);
 app.get('/sub', universal);
+app.get('/lazy', universal);
 
 app.get('*', (req, res) => {
   res.status(404).send('');

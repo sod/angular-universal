@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "bin/npm-install; echo 'normal: http://localhost:4200 universal: http://localhost:4000'; concurrently npm:dev npm:universal",
-    "dev": "ng serve",
+    "start": "bin/npm-install; concurrently npm:universal-build npm:build; echo 'normal: http://localhost:4200 universal: http://localhost:4000'; concurrently npm:dev-server npm:universal-dev-server",
+    "dev-server": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "universal": "ts-node -T --project src/tsconfig.server.json universal-server.ts"
+    "universal-dev-server": "ts-node -T --project src/tsconfig.server.json universal-server.ts",
+    "universal-build": "ng run foo:server"
   },
   "private": true,
   "dependencies": {
