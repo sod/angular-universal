@@ -28,6 +28,7 @@ app.engine('html', (_, options, callback) => {
   renderModuleFactory(AppServerModuleNgFactory, {
     // Our index.html
     document: template,
+    // document: '<app-root></app-root>',
     url: options.req.url,
     // DI so that we can get lazy-loading to work differently (since we need it to just instantly render it)
     extraProviders: [
