@@ -3,7 +3,6 @@
 Install and run it:
 
 ```sh
-npm install
 npm start
 ```
 

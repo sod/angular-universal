@@ -1,0 +1,53 @@
+#!/bin/bash
+
+#
+# This file is an `npm install` wrapper to reduce consecutive npm install time
+#
+# Example:
+#   ../bin/npm-install --production --no-optional
+#
+# After a successful install, this script will persist current package-lock.json, caller
+# arguments, npm version and node version inside node_modules
+#
+# On consecutive calls, if parameters didn't change, npm install is skipped entirely
+#
+
+LOCK_FILE="package-lock.json"
+PROJECT=`basename $(pwd)`
+
+log() {
+    echo [npm-install] [${PROJECT}] $@
+}
+
+if [ ! -f "${LOCK_FILE}" ]; then
+    log "${LOCK_FILE} missing in current directory."
+    exit 1
+fi
+
+NPM_VERSION="$(npm -v | cut -c1-3)"
+VERSIONS="[npm-install] npm[${NPM_VERSION}] node[$(node -v)] arguments[$@]"
+LOCK_FILE_COPY="node_modules/.${LOCK_FILE}"
+LOCK_FILE_SNAPSHOT="node_modules/.${LOCK_FILE}.snapshot"
+
+get_snapshot() {
+    local MODULES=`ls -m node_modules 2>/dev/null`
+
+    log "${VERSIONS} modules[${MODULES}]"
+}
+
+diff -q ${LOCK_FILE} ${LOCK_FILE_COPY} > /dev/null 2>&1
+
+DIFF_EXIT_CODE=$?
+
+if [[ "${NPM_VERSION}" != "6.4" ]]; then
+    log "WARNING: We use npm 6.4.x. If your package-lock.json changes on install, consider installing latest nodejs lts version or 'npm install -g npm@6.4'"
+fi
+
+if [[ "${DIFF_EXIT_CODE}" == "0" && `cat ${LOCK_FILE_SNAPSHOT} 2>/dev/null` == "`get_snapshot`" ]]; then
+    log "up to date in 0.2s"
+    exit 0
+fi
+
+npm ci "$@" && \
+    cp ${LOCK_FILE} ${LOCK_FILE_COPY} && \
+    get_snapshot > ${LOCK_FILE_SNAPSHOT}
